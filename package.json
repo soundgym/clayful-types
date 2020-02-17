@@ -1,0 +1,22 @@
+{
+  "name": "clayful-types",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+   },
+  "version": "0.0.1",
+  "description": "clayful type definition",
+  "main": "index.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/soundgym/clayful-types.git"
+  },
+  "author": "bang9 <gusrn1423@naver.com> (https://github.com/bang9)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/soundgym/clayful-types/issues"
+  },
+  "homepage": "https://github.com/soundgym/clayful-types#readme"
+}
