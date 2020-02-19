@@ -1,6 +1,6 @@
 //  https://github.com/Clayful/clayful-js/tree/master/lib/models-js
 declare module "clayful" {
-  import * as axios from "axios";
+  import { AxiosResponse } from "axios";
 
   export interface IClayfulHeadersOptions {
     language?: string;
@@ -29,6 +29,19 @@ declare module "clayful" {
     debugLanguage?: "ko";
   }
 
+  export interface IClayfulAddress {
+    name?: ICustomerName;
+    mobile?: string;
+    phone?: string;
+    company?: string;
+    postcode?: string;
+    country: string;
+    state: string;
+    city?: string;
+    address1: string;
+    address2?: string;
+  }
+
   export interface IClayfulTimeFormat {
     //"2018-09-19T04:22:30.195Z";
     raw: string;
@@ -45,16 +58,26 @@ declare module "clayful" {
     converted: string;
   }
 
+  export interface IClayfulTaxedPriceFormat {
+    original: number;
+    sale: number;
+    withTax: number;
+    withoutTax: number;
+  }
+
   export interface IClayfulCountFormat {
-    count: {
-      raw: number;
-      formatted: string;
-      converted: string;
-    };
+    count: IClayfulNumberFormat;
+  }
+
+  export interface IClayfulNumberFormat {
+    raw: number;
+    formatted: string;
+    converted: string;
   }
 
   // https://www.notion.so/ac4b1c6e6d3f4364974cd93120bf2b9d#2312a542910e47f4a312f1478412335f
-  export interface IClayfulRequestOptions<Query> extends IClayfulConfig {
+  type IClayfulRequestOptions<T> = IClayfulRequestWithQuery<T> | null;
+  export interface IClayfulRequestWithQuery<Query> extends IClayfulConfig {
     query?: Query;
     currency?: string;
     timeZone?: string;
@@ -77,108 +100,98 @@ declare module "clayful" {
     isClayful: true;
   }
 
+  export interface ICustomerName {
+    first?: null | string;
+    last?: null | string;
+    full?: null | string;
+  }
+
   //https://dev.clayful.io/ko/node/apis/customer/create
   export namespace Customer {
     interface ICustomer {
+      /** 고객 수를 세어옵니다. **/
       count: (
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<IClayfulCountFormat>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<IClayfulCountFormat>) => void
       ) => void;
+
+      /** 새로운 고객을 가입시킵니다. **/
       create: (
         payload: ICustomerPayload,
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<ICustomerItem>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<ICustomerItem>) => void
       ) => void;
+
+      /** 고객 한명을 삭제합니다. **/
       delete: (
         customerId: string,
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<null>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<null>) => void
       ) => void;
+
+      /** 고객 한명을 가져옵니다. **/
       get: (
         customerId: string,
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<ICustomerItem>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<ICustomerItem>) => void
       ) => void;
+
+      /** 고객 목록을 가져옵니다. **/
       list: (
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<ICustomerItem[]>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<ICustomerItem[]>) => void
       ) => void;
+
+      /** 고객을 수정합니다. **/
       update: (
         customerId: string,
         payload: ICustomerPayload,
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<ICustomerItem>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<ICustomerItem>) => void
       ) => void;
 
-      // App
+      /** 고객을 로그인 시킵니다. **/
       authenticate: (
         payload: IAuthPayload,
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<IAuthResponse>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<IAuthResponse>) => void
       ) => void;
+
+      /** 고객의 로그인 여부를 확인합니다. **/
       isAuthenticated: (
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<{ authenticated: boolean }>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<{ authenticated: boolean }>) => void
       ) => void;
+
+      /** 내 정보를 가져옵니다. **/
       getMe: (
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<ICustomerItem>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<ICustomerItem>) => void
       ) => void;
+
+      /** 내 정보를 삭제하고, 서비스를 탈퇴합니다. **/
       deleteMe: (
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<null>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<null>) => void
       ) => void;
+
+      /** 내 정보를 업데이트 합니다. **/
       updateMe: (
         payload: ICustomerPayload,
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<ICustomerItem>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<ICustomerItem>) => void
       ) => void;
+
+      /** 내 쿠폰 목록을 조회합니다. **/
       listCouponsForMe: (
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<IUserCouponItem[]>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<IUserCouponItem[]>) => void
       ) => void;
+
+      /** 내 쿠폰 수를 세어옵니다. **/
       countCouponsForMe: (
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<IClayfulCountFormat>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<IClayfulCountFormat>) => void
       ) => void;
     }
 
@@ -202,93 +215,55 @@ declare module "clayful" {
       connect?: boolean;
       verified?: boolean;
       groups?: string[];
-      userId: string | null;
-      alias?: string | null;
-      email?: string | null;
-      password?: string | null;
-      avatar?: string | null;
-      name?: {
-        first?: string | null;
-        last?: string | null;
-        full?: string | null;
-      };
+      userId: null | string;
+      alias?: null | string;
+      email?: null | string;
+      password?: null | string;
+      avatar?: null | string;
+      name?: ICustomerName;
       address?: {
-        primary?: {
-          name?: {
-            first?: string | null;
-            last?: string | null;
-            full?: string | null;
-          };
-          company?: string | null;
-          postcode?: string | null;
-          country?: string;
-          state?: string | null;
-          city?: string;
-          address1?: string;
-          address2?: string | null;
-          mobile?: string | null;
-          phone?: string | null;
-        };
-        secondaries?: {
-          name?: {
-            first?: string | null;
-            last?: string | null;
-            full?: string | null;
-          };
-          company?: string | null;
-          postcode?: string | null;
-          country?: string;
-          state?: string | null;
-          city?: string;
-          address1?: string;
-          address2?: string | null;
-          mobile?: string | null;
-          phone?: string | null;
-        }[];
+        primary?: IClayfulAddress;
+        secondaries?: IClayfulAddress[];
       };
-      mobile?: string | null;
-      phone?: string | null;
-      gender?: string | "male" | "female" | null;
-      birthdate?: string | null;
-      country?: string | null;
-      language?: string | null;
-      currency?: string | null;
-      timezone?: string | null;
+      mobile?: null | string;
+      phone?: null | string;
+      gender?: null | string | "male" | "female";
+      birthdate?: null | string;
+      country?: null | string;
+      language?: null | string;
+      currency?: null | string;
+      timezone?: null | string;
       meta?: object;
       deactivated?: boolean;
     }
 
     interface ICustomerItem {
       _id: string;
-      name: {
-        first: string | null;
-        last: string | null;
-        full: string | null;
-      };
+      name: ICustomerName;
       address: {
-        primary: null;
-        secondaries: any[];
+        primary: null | IClayfulAddress;
+        secondaries: IClayfulAddress[];
       };
       connect: boolean;
       verified: boolean;
       groups: any[];
       userId: string;
-      alias: string | null;
-      email: string | null;
+      alias: null | string;
+      email: null | string;
       avatar: null | {
         _id: string;
         url: string;
       };
-      gender: string | null;
-      birthdate: string | null;
-      country: string | null;
-      mobile: string | null;
-      phone: string | null;
-      language: string | null;
-      currency: string | null;
-      timezone: string | null;
-      deactivatedAt: IClayfulTimeFormat | null;
-      lastLoggedInAt: IClayfulTimeFormat | null;
+      gender: null | string;
+      birthdate: null | string;
+      country: null | string;
+      mobile: null | string;
+      phone: null | string;
+      language: null | string;
+      currency: null | string;
+      timezone: null | string;
+      deactivatedAt: null | IClayfulTimeFormat;
+      lastLoggedInAt: null | IClayfulTimeFormat;
       social: any[];
       meta: object;
       createdAt: IClayfulTimeFormat;
@@ -299,62 +274,72 @@ declare module "clayful" {
   //https://dev.clayful.io/ko/node/apis/product/list
   export namespace Product {
     interface IProduct {
+      /** 상품 목록을 가져옵니다. */
       list: (
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<IProductItem[]>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<IProductItem[]>) => void
       ) => void;
+
+      /** 상의 수를 세어옵니다. */
       count: (
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<IClayfulCountFormat>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<IClayfulCountFormat>) => void
       ) => void;
+
+      /** 상품 하나를 가져옵니다. */
       get: (
         productId: string,
-        options: IClayfulRequestOptions<object> | null,
-        callback: (
-          err: IClayfulError,
-          result: axios.AxiosResponse<IProductItem>
-        ) => void
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, result: AxiosResponse<IProductItem>) => void
       ) => void;
     }
 
-    interface IPrice {
-      original: {
-        raw: number;
-        convertedRaw: number;
-        formatted: string;
-        converted: string;
-      };
-      sale: {
-        raw: number;
-        convertedRaw: number;
-        formatted: string;
-        converted: string;
-      };
+    type ProductType = "tangible" | "downloadable" | "ticket" | "custom";
+
+    interface IProductPrice {
+      original: IClayfulPriceFormat;
+      sale: IClayfulPriceFormat;
     }
 
     interface IDiscountPrice {
-      type: null;
-      value: null;
-      discounted: {
-        raw: number;
-        convertedRaw: number;
-        formatted: string;
-        converted: string;
-      };
+      type: null | any;
+      value: null | any;
+      discounted: IClayfulPriceFormat;
     }
 
     interface IProductItem {
       _id: string;
+      type: ProductType;
       name: string;
       summary: string;
       description: string;
-      price: IPrice;
+
+      variants: IProductVariant[];
+      bundles: {
+        name: string;
+        required: boolean;
+        items: {
+          product: {
+            _id: string;
+            type: "tangible";
+            slug: string;
+            name: string;
+            bundled: true;
+            available: boolean;
+            price: IProductPrice;
+            discount: IDiscountPrice;
+            shipping: {
+              methods: { _id: string; name: string; slug: string }[];
+              calculation: "bundled" | string;
+            };
+          };
+          variant: IProductVariant;
+        }[];
+      }[];
+      meta: object;
+      slug: string;
+
+      price: IProductPrice;
       discount: IDiscountPrice;
       shipping: {
         methods: [
@@ -367,21 +352,9 @@ declare module "clayful" {
         calculation: string;
       };
       rating: {
-        count: {
-          raw: number;
-          formatted: string;
-          converted: string;
-        };
-        sum: {
-          raw: number;
-          formatted: string;
-          converted: string;
-        };
-        average: {
-          raw: number;
-          formatted: string;
-          converted: string;
-        };
+        count: IClayfulNumberFormat;
+        sum: IClayfulNumberFormat;
+        average: IClayfulNumberFormat;
       };
       bundled: boolean;
       available: boolean;
@@ -389,13 +362,13 @@ declare module "clayful" {
         _id: string;
         url: string;
       };
-      taxCategories: [];
+      taxCategories: any[];
       totalReview: {
         raw: number;
         formatted: string;
         converted: string;
       };
-      brand?: {
+      brand: null | {
         _id: string;
         name: string;
         slug: string;
@@ -426,237 +399,600 @@ declare module "clayful" {
           _id: string;
         }[];
       }[];
-
-      variants: {
-        price: IPrice;
-        discount: IDiscountPrice;
-        available: boolean;
-        thumbnail: null | string;
-        quantity: {
-          raw: number;
-          formatted: string;
-          converted: string;
-        };
-        sku: string;
-        types: {
-          option: {
-            name: string;
-            priority: number;
-            _id: string;
-          };
-          variation: {
-            value: string;
-            priority: number;
-            _id: string;
-          };
-        }[];
-        weight: {
-          raw: number;
-          formatted: string;
-          converted: string;
-        };
-        width: {
-          raw: number;
-          formatted: string;
-          converted: string;
-        };
-        height: {
-          raw: number;
-          formatted: string;
-          converted: string;
-        };
-        depth: {
-          raw: number;
-          formatted: string;
-          converted: string;
-        };
-        _id: string;
-      }[];
-
-      bundles: [];
-      meta: {};
       createdAt: IClayfulTimeFormat;
       updatedAt: IClayfulTimeFormat;
-      type: string;
-      slug: string;
+    }
+
+    interface IProductVariant {
+      _id: string;
+      sku: string;
+      thumbnail: null | string;
+      quantity: null | number;
+      types: IProductVariantType[];
+      available: boolean;
+      price: IProductPrice;
+      discount: IDiscountPrice;
+      weight?: IClayfulNumberFormat;
+      width?: IClayfulNumberFormat;
+      height?: IClayfulNumberFormat;
+      depth?: IClayfulNumberFormat;
+    }
+
+    interface IProductVariantType {
+      option: {
+        _id: string;
+        priority: number;
+        name: string;
+      };
+      variation: {
+        _id: string;
+        priority: number;
+        value: string;
+      };
     }
   }
 
   // https://dev.clayful.io/ko/node/apis/cart/get
   export namespace Cart {
     interface ICart {
+      /** 내 카트에 상품을 추가합니다. **/
       addItemForMe: (
-        payload: ICartPayload,
-        options: any,
-        callback: (err: IClayfulError, response: any) => void
+        payload: ICartEditPayload,
+        options: IClayfulRequestOptions<null>,
+        callback: (err: IClayfulError, response: AxiosResponse<ICardEditResponse>) => void
       ) => void;
+
+      /** 내 카트에 상품을 업데이트합니다. **/
       updateItemForMe: (
-        id: string,
-        payload: ICartPayload,
-        options: any,
-        callback: (err: IClayfulError, response: any) => void
+        cartItemId: string,
+        payload: ICartEditPayload,
+        options: IClayfulRequestOptions<null>,
+        callback: (err: IClayfulError, response: AxiosResponse<ICardEditResponse>) => void
       ) => void;
+
+      /** 내 카트에 상품을 삭제합니다. **/
       deleteItemForMe: (
-        id: string,
-        options: any,
-        callback: (err: IClayfulError, response: any) => void
+        cartItemId: string,
+        options: IClayfulRequestOptions<null>,
+        callback: (err: IClayfulError, response: AxiosResponse<null>) => void
       ) => void;
+
+      /** 내 카트를 초기화 합니다. **/
       emptyItemForMe: (
-        options: any,
-        callback: (err: IClayfulError) => void
+        options: IClayfulRequestOptions<null>,
+        callback: (err: IClayfulError, response: AxiosResponse<null>) => void
       ) => void;
+
+      /** 내 카트를 계산하고 가져옵니다. **/
       getForMe: (
-        payload: ICartPayload,
-        options: any,
-        callback: (err: IClayfulError, response: any) => void
+        payload: ICartGetPayload,
+        options: IClayfulRequestOptions<{ items: string[] }>,
+        callback: (err: IClayfulError, response: AxiosResponse<ICartItem>) => void
       ) => void;
-      getAsNonRegisteredForMe: (
-        payload: ICartPayload,
-        options: any,
-        callback: (err: IClayfulError, response: any) => void
-      ) => void;
+
+      /** 내 카트에 담긴 상품을 주문합니다. **/
       checkoutForMe: (
-        id: string,
+        type: "order" | "subscription",
         payload: ICartCheckOutPayload,
-        options: any,
-        callback: (err: IClayfulError, response: any) => void
-      ) => void;
-      checkoutAsNonRegisteredForMe: (
-        id: string,
-        payload: ICartCheckOutPayload,
-        options: any,
-        callback: (err: IClayfulError, response: any) => void
+        options: IClayfulRequestOptions<{ items: string[] }>,
+        callback: (err: IClayfulError, response: AxiosResponse<Order.IOrderItem>) => void
       ) => void;
     }
 
-    interface ICartPayload {
-      items: ICartItemPayload[];
+    interface ICartItem {
+      items: ICartItemProduct[];
+      status: string;
       address: {
-        shipping: IAddress;
-        billing: IAddress;
+        shipping: IClayfulAddress;
+        billing: IClayfulAddress;
       };
-      discount: {
-        cart: {
-          coupon: string;
-          discounts: string[];
+      total: {
+        price: {
+          original: IClayfulPriceFormat;
+          sale: IClayfulPriceFormat;
+          withTax: IClayfulPriceFormat;
+          withoutTax: IClayfulPriceFormat;
         };
-        items: IItem[];
-        shipping: IItem[];
+        discounted: IClayfulPriceFormat;
+        taxed: IClayfulPriceFormat;
+        amount: IClayfulPriceFormat;
+        items: {
+          price: {
+            original: IClayfulPriceFormat;
+            sale: IClayfulPriceFormat;
+            withTax: IClayfulPriceFormat;
+            withoutTax: IClayfulPriceFormat;
+          };
+          discounted: IClayfulPriceFormat;
+          taxed: IClayfulPriceFormat;
+        };
+        shipping: {
+          fee: {
+            original: IClayfulPriceFormat;
+            sale: IClayfulPriceFormat;
+            withTax: IClayfulPriceFormat;
+            withoutTax: IClayfulPriceFormat;
+          };
+          discounted: IClayfulPriceFormat;
+          taxed: IClayfulPriceFormat;
+        };
       };
-      subscription: {
+
+      shipments: {
+        type: "bundled" | string;
+        items: object[];
+        shippingPolicy: {
+          _id: string;
+        };
+        rule: object;
+        quantity: IClayfulNumberFormat;
+        free: boolean;
+        discounts: any[];
+        discounted: IClayfulPriceFormat;
+        taxes: any[];
+        taxed: IClayfulPriceFormat;
+        fee: object;
+      }[];
+
+      tax: {
+        included: boolean;
+        country: object;
+        region: null | any;
+      };
+      currency: object;
+      language: object;
+      errors: any[];
+    }
+
+    interface ICartItemProduct {
+      _id: string;
+      product: {
+        _id: string;
+        slug: string;
+        thumbnail: {
+          _id: string;
+          url: string;
+        };
+        name: string;
+      };
+      shippingMethod: {
+        _id: string;
+        slug: string;
+        name: string;
+      };
+      variant: Product.IProductVariant;
+      quantity: IClayfulNumberFormat;
+      bundleItems: ICartBundleItemInfo[];
+      addedAt: IClayfulTimeFormat;
+      status: string;
+      errors: any[];
+      brand: {
+        _id: string;
+        slug: string;
+        name: string;
+      };
+      collections: {
+        path: {
+          _id: string;
+          slug: string;
+          name: string;
+        }[];
+      }[];
+      discounts: {
+        coupon: {
+          _id: string;
+          slug: string;
+          name: string;
+          type: string;
+          discount: {
+            min: null;
+            max: null;
+            type: string;
+            value: IClayfulNumberFormat;
+          };
+        };
+        type: string;
+        value: IClayfulNumberFormat;
+        overridden: null;
+        discounted: IClayfulPriceFormat;
+        before: IClayfulPriceFormat;
+        after: IClayfulPriceFormat;
+      }[];
+
+      discounted: IClayfulPriceFormat;
+
+      taxes: {
+        name: string;
+        rate: IClayfulNumberFormat;
+        taxed: IClayfulPriceFormat;
+      }[];
+
+      taxed: IClayfulPriceFormat;
+      taxCategory: null;
+      price: {
+        original: IClayfulPriceFormat;
+        sale: IClayfulPriceFormat;
+        withTax: IClayfulPriceFormat;
+        withoutTax: IClayfulPriceFormat;
+      };
+      total: {
+        price: {
+          original: IClayfulPriceFormat;
+          sale: IClayfulPriceFormat;
+          withTax: IClayfulPriceFormat;
+          withoutTax: IClayfulPriceFormat;
+        };
+        discounted: IClayfulPriceFormat;
+        taxed: IClayfulPriceFormat;
+      };
+    }
+
+    interface ICartEditPayload {
+      product: string;
+      variant: string;
+      quantity: number;
+      shippingMethod: null | string;
+      bundleItems: ICartBundleItemInfo[];
+    }
+
+    interface ICartBundleItemInfo {
+      product: string;
+      variant: string;
+      quantity: number;
+      shippingMethod: null | string;
+    }
+
+    interface ICardEditResponse {
+      shippingMethod: string;
+      bundleItems: ICartBundleItemInfo[];
+      addedAt: string;
+      product: string;
+      variant: string;
+      quantity: number;
+      _id: string;
+    }
+
+    interface ICartGetPayload {
+      address: {
+        shipping: IClayfulAddress;
+        billing: IClayfulAddress;
+      };
+      discount?: {
+        cart: Omit<IDiscountInfo, "item">;
+        items: IDiscountInfo[];
+        shipping: IDiscountInfo[];
+      };
+      subscription?: {
         plan: string;
         startsAt: Date;
         timezone: string;
       };
     }
 
-    interface ICartItem {
-      product: Product.IProductItem;
-      variant: {
-        _id: string;
-        sku: string;
-        thumbnail?: string;
-        types: Array<{
-          option: {
-            _id: string;
-            name: string;
-          };
-          variation: {
-            _id: string;
-            value: string;
-          };
-        }>;
-        price: Product.IPrice;
-      };
-      quantity: number;
-      shippingMethod?: {
-        _id: string;
-        slug: string;
-        name: string;
-      };
-    }
-
     interface ICartCheckOutPayload {
-      items: ICartItemPayload[];
-      address: IAddress;
-      discount: {
-        cart: { coupon: string };
-        items: Array<{ item: string; coupon: string }>;
-        shipping: Array<{ item: string; coupon: string }>;
-      };
       currency: string;
       paymentMethod: string;
-      customer: {
-        name: {
-          first: string;
-          last: string;
-          full: string;
-        };
-        email: string;
-        mobile: string;
-        phone: string;
+      paymentMethods?: string[];
+      subscription?: {
+        plan: string;
+        startsAt: Date;
+        timezone: string;
       };
-      request: string;
       tags: string[];
-    }
-
-    interface ICartItemPayload extends ICartItem {
-      bundleItems?: ICartItem[];
-      addedAt?: Date;
-    }
-
-    interface IItem {
-      item: string;
-      coupon: string;
-      discounts: string[];
-    }
-
-    interface IAddress {
-      company?: string;
-      postcode?: string;
-      country: string;
-      state: string;
-      city?: string;
-      address1: string;
-      address2?: string;
-      name: {
-        first?: string;
-        last?: string;
-        full?: string;
+      address: {
+        shipping: IClayfulAddress;
+        billing: IClayfulAddress;
       };
-      mobile?: string;
-      phone?: string;
+      request: null | string;
+      meta: object;
+      discount?: {
+        cart?: Omit<IDiscountInfo, "item">;
+        items?: IDiscountInfo[];
+        shipping?: IDiscountInfo[];
+      };
     }
 
-    interface ICurrency {
-      raw: number;
-      convertedRaw: number;
-      formatted: string;
-      converted: string;
+    interface IDiscountInfo {
+      item: string;
+      coupon?: string;
+      discounts?: string[];
     }
   }
 
   //https://dev.clayful.io/ko/node/apis/order/list
   export namespace Order {
     interface IOrder {
+      /** 내 주문 내역 목록을 요청합니다. */
+      listForMe: (
+        options: IClayfulRequestOptions<object>,
+        callback: (err: IClayfulError, response: AxiosResponse<IOrderItem[]>) => void
+      ) => void;
+
+      /** 내 주문 내역의 요청사항을 수정합니다. */
+      updateForMe: (
+        id: string,
+        payload: IOrderUpdatePayload,
+        options: IClayfulRequestOptions<null>,
+        callback: (err: IClayfulError, response: AxiosResponse<IOrderItem>) => void
+      ) => void;
+
+      /** 내 주문을 취소합니다. (placed -> cancelled) **/
+      cancelForMe: (
+        id: string,
+        payload: { reason: string },
+        callback: (err: IClayfulError, response: AxiosResponse<object>) => void
+      ) => void;
+
+      /** 내 주문의 환불을 요청합니다. (paid -> under-refunded -> refunded) **/
+      requestRefundForMe: (
+        id: string,
+        payload: IOrderRefundRequestPayload,
+        options: IClayfulRequestOptions<null>,
+        callback: (err: IClayfulError, response: AxiosResponse<object>) => void
+      ) => void;
+
+      /** 내 주문의 환불 요청을 취소합니다. (under-refunded -> paid) **/
+      cancelRefundForMe: (
+        orderId: string,
+        refundId: string,
+        payload: { reason: string },
+        callback: (err: IClayfulError, response: AxiosResponse<object>) => void
+      ) => void;
+
+      /** 내 주문 내역을 동기화합니다. (아임포트 결제 내역을 주문 상태에 반영합니다.) **/
       updateTransactionsForMe: (
         id: string,
-        options: any,
-        callback: (err, response) => void
+        options: IClayfulRequestOptions<null>,
+        callback: (
+          err: IClayfulError,
+          response: AxiosResponse<{
+            status: OrderStatus;
+            transactions: {
+              paid: number;
+              cancelled: number;
+              refunded: number;
+              vbanks: any[];
+              createdAt: string;
+              updatedAt: string;
+              paymentMethod: string;
+            }[];
+          }>
+        ) => void
       ) => void;
     }
+    interface IOrderRefundRequestPayload {
+      reason: null | string;
+      items: { item: string; quantity: number }[];
+      shipments: string[];
+    }
+
+    interface IOrderUpdatePayload {
+      request: null | string;
+      meta: object;
+    }
+
+    type OrderStatus =
+      | "placed"
+      | "cancelled"
+      | "paid"
+      | "under-paid"
+      | "over-paid"
+      | "refunded"
+      | "partially-refunded"
+      | "under-refunded"
+      | "over-refunded";
 
     interface IOrderItem {
       _id: string;
-      status: string;
+      status: OrderStatus;
+
+      tags: any[];
+      arrivedAt: null | any;
+      syncTriedAt: null | any;
+      cancellation: null | any;
+      request: string;
+      synced: boolean;
+      done: boolean;
+      language: "ko";
+
+      // 구매자 정보
       customer: Customer.ICustomerItem;
+
+      // 배송지
+      address: {
+        shipping: IClayfulAddress;
+        billing: IClayfulAddress;
+      };
+
+      // 통화정보
+      currency: {
+        base: {
+          code: string;
+          precision: number;
+        };
+        payment: {
+          code: string;
+          precision: number;
+        };
+        rate: number;
+      };
+
+      // 세금정보
+      tax: {
+        region: null | string;
+        included: boolean;
+        country: string;
+      };
+
+      // 주문한 금액 총 내역
+      total: {
+        price: IClayfulPriceFormat;
+        items: {
+          price: IClayfulTaxedPriceFormat;
+          discounted: number;
+          taxed: number;
+        };
+        shipping: {
+          fee: IClayfulTaxedPriceFormat;
+          discounted: number;
+          taxed: number;
+        };
+        discounted: number;
+        taxed: number;
+        amount: number;
+        taxes: {
+          key: string;
+          taxed: number;
+        }[];
+      };
+
+      // 주문한 상품 정보
+      items: {
+        total: {
+          price: IClayfulTaxedPriceFormat;
+          discounted: number;
+          taxed: number;
+        };
+        price: IClayfulTaxedPriceFormat;
+        brand: null | string;
+        shippingMethod: string;
+        taxCategory: null | any;
+        bundleItems: [];
+        collections: {
+          path: string[];
+        }[];
+
+        discounts: {
+          overridden: null | any;
+          coupon: string;
+          type: "percentage" | string;
+          value: number;
+          discounted: number;
+          before: number;
+          after: number;
+        }[];
+
+        taxes: {
+          name: string;
+          rate: number;
+          taxed: number;
+        }[];
+        product: string;
+        variant: string;
+        quantity: number;
+        _id: string;
+        type: Product.ProductType;
+        discounted: number;
+        taxed: number;
+      }[];
+
+      // 주문한 상품의 배송 정보
+      shipments: {
+        rule: {
+          free: {
+            priceOver: null;
+          };
+          criteria: {
+            price: number;
+            weight: number;
+          };
+          weightOver: number;
+          fee: number;
+        };
+        fee: IClayfulTaxedPriceFormat;
+        items: string[];
+        discounts: any[];
+        taxes: {
+          name: string;
+          rate: number;
+          taxed: number;
+        }[];
+        type: string;
+        shippingPolicy: string;
+        quantity: number;
+        free: boolean;
+        discounted: number;
+        taxed: number;
+        _id: string;
+      }[];
+
+      // 배송 이행 내역
+      fulfillments: {
+        tracking: {
+          company: null | string;
+          uid: null | string;
+          url: null | string;
+        };
+        items: {
+          item: string;
+          quantity: number;
+        }[];
+        createdAt: string;
+        updatedAt: string;
+        _id: string;
+        status: "pending" | "shipped" | "arrived";
+      }[];
+
+      // 환불 내역
+      refunds: {
+        total: {
+          price: Pick<IClayfulTaxedPriceFormat, "withTax" | "withoutTax">;
+          items: {
+            price: Pick<IClayfulTaxedPriceFormat, "withTax" | "withoutTax">;
+            taxed: number;
+          };
+          shipping: {
+            fee: Pick<IClayfulTaxedPriceFormat, "withTax" | "withoutTax">;
+            taxed: number;
+          };
+          taxed: number;
+          taxes: {
+            key: string;
+            taxed: number;
+          }[];
+        };
+        reason: null | string;
+        // 환불 요청 -> 환불 취소 내역
+        cancellation: null | {
+          by: "customer" | "store";
+          reason: string;
+          cancelledAt: string;
+        };
+        items: {
+          price: Pick<IClayfulTaxedPriceFormat, "withTax" | "withoutTax">;
+          taxed: number;
+          taxes: {
+            taxed: number;
+            name: string;
+          }[];
+          item: string;
+          quantity: number;
+        }[];
+        shipments: [];
+        createdAt: string;
+        updatedAt: string;
+        status: "requested" | "accepted" | "cancelled";
+        _id: string;
+      }[];
+
+      transactions: {
+        paid: number;
+        cancelled: number;
+        refunded: number;
+        vbanks: any[];
+        createdAt: string;
+        updatedAt: string;
+        paymentMethod: string;
+      }[];
+      meta: object;
+      createdAt: string;
+      updatedAt: string;
     }
   }
 
   //https://dev.clayful.io/ko/node/apis/coupon/list
   export namespace Coupon {
     interface ICoupon {}
-
     interface ICouponItem {
       _id: string;
       name: string;
@@ -668,11 +1004,11 @@ declare module "clayful" {
         value: IClayfulCountFormat;
       };
       amount: {
-        total: IClayfulCountFormat | null;
+        total: null | IClayfulCountFormat;
         used: IClayfulCountFormat;
-        left: IClayfulCountFormat | null;
+        left: null | IClayfulCountFormat;
         issued: IClayfulCountFormat;
-        unissued: IClayfulCountFormat | null;
+        unissued: null | IClayfulCountFormat;
       };
       category: {
         type: string;
@@ -689,7 +1025,7 @@ declare module "clayful" {
       only: boolean;
       expiresAt: IClayfulTimeFormat;
       type: string;
-      meta: {};
+      meta: object;
       slug: string;
       createdAt: IClayfulTimeFormat;
       updatedAt: IClayfulTimeFormat;
@@ -707,8 +1043,8 @@ declare module "clayful" {
     Product: Product.IProduct;
     Cart: Cart.ICart;
     Order: Order.IOrder;
-    Coupon: Coupon.ICoupon;
-    Discount: Discount.IDiscount;
+    // Coupon: Coupon.ICoupon;
+    // Discount: Discount.IDiscount;
   };
 
   export default Clayful;

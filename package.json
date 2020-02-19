@@ -1,6 +1,6 @@
 {
   "name": "clayful-types",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "clayful type definition",
   "main": "index.d.ts",
   "scripts": {
@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/soundgym/clayful-types/issues"
   },
-  "homepage": "https://github.com/soundgym/clayful-types#readme"
+  "homepage": "https://github.com/soundgym/clayful-types#readme",
+  "devDependencies": {
+    "axios": "^0.19.2",
+    "prettier": "^1.19.1",
+    "typescript": "^3.7.5"
+  }
 }
