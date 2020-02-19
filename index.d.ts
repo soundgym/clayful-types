@@ -34,16 +34,16 @@ declare module "clayful" {
   }
 
   export interface IClayfulAddress {
-    name?: ICustomerName;
-    mobile?: string;
-    phone?: string;
-    company?: string;
-    postcode?: string;
-    country: string;
+    name: ICustomerName;
     state: string;
-    city?: string;
+    city: string;
+    country: "KR";
     address1: string;
     address2?: string;
+    mobile: string;
+    postcode: string;
+    phone?: string;
+    company?: string;
   }
 
   export interface IClayfulTimeFormat {
@@ -676,6 +676,7 @@ declare module "clayful" {
     }
 
     interface ICartCheckOutPayload {
+      items?: ICartEditPayload[];
       currency: string;
       paymentMethod: string;
       paymentMethods?: string[];
