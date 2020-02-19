@@ -315,27 +315,7 @@ declare module "clayful" {
       description: string;
 
       variants: IProductVariant[];
-      bundles: {
-        name: string;
-        required: boolean;
-        items: {
-          product: {
-            _id: string;
-            type: "tangible";
-            slug: string;
-            name: string;
-            bundled: true;
-            available: boolean;
-            price: IProductPrice;
-            discount: IDiscountPrice;
-            shipping: {
-              methods: { _id: string; name: string; slug: string }[];
-              calculation: "bundled" | string;
-            };
-          };
-          variant: IProductVariant;
-        }[];
-      }[];
+      bundles: IProductBundle[];
       meta: object;
       slug: string;
 
@@ -401,6 +381,28 @@ declare module "clayful" {
       }[];
       createdAt: IClayfulTimeFormat;
       updatedAt: IClayfulTimeFormat;
+    }
+
+    interface IProductBundle {
+      name: string;
+      required: boolean;
+      items: {
+        product: {
+          _id: string;
+          type: "tangible";
+          slug: string;
+          name: string;
+          bundled: true;
+          available: boolean;
+          price: IProductPrice;
+          discount: IDiscountPrice;
+          shipping: {
+            methods: { _id: string; name: string; slug: string }[];
+            calculation: "bundled" | string;
+          };
+        };
+        variant: IProductVariant;
+      }[];
     }
 
     interface IProductVariant {
