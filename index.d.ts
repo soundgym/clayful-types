@@ -29,6 +29,10 @@ declare module "clayful" {
     debugLanguage?: "ko";
   }
 
+  export interface IClayfulCustomField {
+    [key: string]: any;
+  }
+
   export interface IClayfulAddress {
     name?: ICustomerName;
     mobile?: string;
@@ -265,7 +269,7 @@ declare module "clayful" {
       deactivatedAt: null | IClayfulTimeFormat;
       lastLoggedInAt: null | IClayfulTimeFormat;
       social: any[];
-      meta: object;
+      meta: IClayfulCustomField;
       createdAt: IClayfulTimeFormat;
       updatedAt: IClayfulTimeFormat;
     }
@@ -316,7 +320,7 @@ declare module "clayful" {
 
       variants: IProductVariant[];
       bundles: IProductBundle[];
-      meta: object;
+      meta: IClayfulCustomField;
       slug: string;
 
       price: IProductPrice;
@@ -686,7 +690,7 @@ declare module "clayful" {
         billing: IClayfulAddress;
       };
       request: null | string;
-      meta: object;
+      meta: IClayfulCustomField;
       discount?: {
         cart?: Omit<IDiscountInfo, "item">;
         items?: IDiscountInfo[];
@@ -770,7 +774,7 @@ declare module "clayful" {
 
     interface IOrderUpdatePayload {
       request: null | string;
-      meta: object;
+      meta: IClayfulCustomField;
     }
 
     type OrderStatus =
@@ -986,7 +990,7 @@ declare module "clayful" {
         updatedAt: string;
         paymentMethod: string;
       }[];
-      meta: object;
+      meta: IClayfulCustomField;
       createdAt: string;
       updatedAt: string;
     }
@@ -1027,7 +1031,7 @@ declare module "clayful" {
       only: boolean;
       expiresAt: IClayfulTimeFormat;
       type: string;
-      meta: object;
+      meta: IClayfulCustomField;
       slug: string;
       createdAt: IClayfulTimeFormat;
       updatedAt: IClayfulTimeFormat;
