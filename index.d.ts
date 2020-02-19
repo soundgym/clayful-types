@@ -472,7 +472,7 @@ declare module "clayful" {
       /** 내 카트를 계산하고 가져옵니다. **/
       getForMe: (
         payload: ICartGetPayload,
-        options: IClayfulRequestOptions<{ items: string[] }>,
+        options: IClayfulRequestOptions<{ items: string }>,
         callback: (err: IClayfulError, response: AxiosResponse<ICartItem>) => void
       ) => void;
 
@@ -480,7 +480,7 @@ declare module "clayful" {
       checkoutForMe: (
         type: "order" | "subscription",
         payload: ICartCheckOutPayload,
-        options: IClayfulRequestOptions<{ items: string[] }>,
+        options: IClayfulRequestOptions<{ items: string }>,
         callback: (err: IClayfulError, response: AxiosResponse<Order.IOrderItem>) => void
       ) => void;
     }
