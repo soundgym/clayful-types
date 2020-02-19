@@ -464,7 +464,7 @@ declare module "clayful" {
       ) => void;
 
       /** 내 카트를 초기화 합니다. **/
-      emptyItemForMe: (
+      emptyForME: (
         options: IClayfulRequestOptions<null>,
         callback: (err: IClayfulError, response: AxiosResponse<null>) => void
       ) => void;
