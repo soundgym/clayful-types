@@ -697,6 +697,17 @@ declare module "clayful" {
         items?: IDiscountInfo[];
         shipping?: IDiscountInfo[];
       };
+      /** 비회원 결제용, 혹은 회원이지만 해당 필드가 없으면 필요함 **/
+      customer?: {
+        name: {
+          full: string;
+          first?: string;
+          last?: string;
+        };
+        email: string | null;
+        mobile: string;
+        phone: string | null;
+      };
     }
 
     interface IDiscountInfo {
