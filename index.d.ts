@@ -481,7 +481,7 @@ declare module "clayful" {
         type: "order" | "subscription",
         payload: ICartCheckOutPayload,
         options: IClayfulRequestOptions<{ items: string }>,
-        callback: (err: IClayfulError, response: AxiosResponse<Order.IOrderItem>) => void
+        callback: (err: IClayfulError, response: AxiosResponse<{ order: Order.IOrderItem }>) => void
       ) => void;
     }
 
@@ -697,16 +697,16 @@ declare module "clayful" {
         items?: IDiscountInfo[];
         shipping?: IDiscountInfo[];
       };
-      /** 비회원 결제용, 혹은 회원이지만 해당 필드가 없으면 필요함 **/
+      /** 비회원 결제용 **/
       customer?: {
         name: {
           full: string;
           first?: string;
           last?: string;
         };
-        email: string | null;
+        email?: string | null;
         mobile: string;
-        phone: string | null;
+        phone?: string | null;
       };
     }
 
