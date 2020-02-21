@@ -720,6 +720,13 @@ declare module "clayful" {
   //https://dev.clayful.io/ko/node/apis/order/list
   export namespace Order {
     interface IOrder {
+      /** 주문을 삭제합니다. **/
+      delete: (
+        orderId: string,
+        options: IClayfulRequestOptions<null>,
+        callback: (err: IClayfulError, response: AxiosResponse<null>) => void
+      ) => void;
+
       /** 내 주문 내역 목록을 요청합니다. */
       listForMe: (
         options: IClayfulRequestOptions<object>,
