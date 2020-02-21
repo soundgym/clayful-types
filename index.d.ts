@@ -404,6 +404,10 @@ declare module "clayful" {
             methods: { _id: string; name: string; slug: string }[];
             calculation: "bundled" | string;
           };
+          thumbnail?: {
+            _id: string;
+            url: string;
+          };
         };
         variant: IProductVariant;
       }[];
