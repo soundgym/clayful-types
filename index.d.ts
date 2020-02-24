@@ -105,9 +105,9 @@ declare module "clayful" {
   }
 
   export interface ICustomerName {
-    first?: null | string;
-    last?: null | string;
-    full?: null | string;
+    first?: string;
+    last?: string;
+    full?: string;
   }
 
   //https://dev.clayful.io/ko/node/apis/customer/create
@@ -244,19 +244,11 @@ declare module "clayful" {
     interface ICustomerMePayload {
       alias?: string;
       avatar?: string;
-      name: {
-        first?: string;
-        last?: string;
-        full?: string;
-      };
+      name: ICustomerName;
       /** primary 혹은 secondaries 둘 중 하나는 필수 */
       address: {
         primary?: {
-          name: {
-            first?: string;
-            last?: string;
-            full?: string;
-          };
+          name: ICustomerName;
           company?: string;
           postcode?: string;
           country: string;
@@ -268,11 +260,7 @@ declare module "clayful" {
           phone?: string;
         };
         secondaries?: {
-          name: {
-            first?: string;
-            last?: string;
-            full?: string;
-          };
+          name: ICustomerName;
           company?: string;
           postcode?: string;
           country: string;
