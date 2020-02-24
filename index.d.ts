@@ -181,7 +181,7 @@ declare module "clayful" {
 
       /** 내 정보를 업데이트 합니다. **/
       updateMe: (
-        payload: ICustomerPayload,
+        payload: ICustomerMePayload,
         options: IClayfulRequestOptions<object>,
         callback: (err: IClayfulError, result: AxiosResponse<ICustomerItem>) => void
       ) => void;
@@ -219,26 +219,80 @@ declare module "clayful" {
       connect?: boolean;
       verified?: boolean;
       groups?: string[];
-      userId: null | string;
-      alias?: null | string;
-      email?: null | string;
-      password?: null | string;
-      avatar?: null | string;
+      userId?: string;
+      alias?: string;
+      email?: string;
+      password?: string;
+      avatar?: string;
       name?: ICustomerName;
       address?: {
         primary?: IClayfulAddress;
         secondaries?: IClayfulAddress[];
       };
-      mobile?: null | string;
-      phone?: null | string;
-      gender?: null | string | "male" | "female";
-      birthdate?: null | string;
-      country?: null | string;
-      language?: null | string;
-      currency?: null | string;
-      timezone?: null | string;
+      mobile?: string;
+      phone?: string;
+      gender?: string | "male" | "female";
+      birthdate?: string;
+      country?: string;
+      language?: string;
+      currency?: string;
+      timezone?: string;
       meta?: object;
       deactivated?: boolean;
+    }
+
+    interface ICustomerMePayload {
+      alias?: string;
+      avatar?: string;
+      name: {
+        first?: string;
+        last?: string;
+        full?: string;
+      };
+      /** primary 혹은 secondaries 둘 중 하나는 필수 */
+      address: {
+        primary?: {
+          name: {
+            first?: string;
+            last?: string;
+            full?: string;
+          };
+          company?: string;
+          postcode?: string;
+          country: string;
+          state?: string;
+          city: string;
+          address1: string;
+          address2?: string;
+          mobile?: string;
+          phone?: string;
+        };
+        secondaries?: {
+          name: {
+            first?: string;
+            last?: string;
+            full?: string;
+          };
+          company?: string;
+          postcode?: string;
+          country: string;
+          state?: string;
+          city: string;
+          address1: string;
+          address2?: string;
+          mobile?: string;
+          phone?: string;
+        }[];
+      };
+      mobile?: string;
+      phone?: string;
+      gender?: string | "male" | "female";
+      birthdate?: Date;
+      country?: string;
+      language?: string;
+      currency?: string;
+      timezone?: string;
+      meta: Object;
     }
 
     interface ICustomerItem {
