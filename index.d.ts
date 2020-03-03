@@ -779,6 +779,18 @@ declare module "clayful" {
         callback: (err: IClayfulError, response: AxiosResponse<IOrderItem[]>) => void
       ) => void;
 
+      /** 내 주문 하나를 요청합니다. */
+      getForMe: (
+        orderId: string,
+        options: IClayfulRequestOptions<{
+          raw: boolean;
+          fields: string;
+          embed: string;
+          displayLanguage: string | "primary" | "order";
+        }>,
+        callback: (err: IClayfulError, response: AxiosResponse<IOrderItem>) => void
+      ) => void;
+
       /** 내 주문 내역의 요청사항을 수정합니다. */
       updateForMe: (
         id: string,
