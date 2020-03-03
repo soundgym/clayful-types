@@ -948,8 +948,9 @@ declare module "clayful" {
           rate: number;
           taxed: number;
         }[];
-        product: string;
-        variant: string;
+
+        product: Pick<Product.IProductItem, "_id" | "name" | "thumbnail">;
+        variant: Omit<Product.IProductVariant, "quantity" | "available">;
         quantity: number;
         _id: string;
         type: Product.ProductType;
@@ -1056,8 +1057,8 @@ declare module "clayful" {
         paymentMethod: string;
       }[];
       meta: IClayfulCustomField;
-      createdAt: string;
-      updatedAt: string;
+      createdAt: IClayfulTimeFormat;
+      updatedAt: IClayfulTimeFormat;
     }
   }
 

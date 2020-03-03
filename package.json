@@ -1,6 +1,6 @@
 {
   "name": "clayful-types",
-  "version": "0.0.13",
+  "version": "0.0.14",
   "description": "clayful type definition",
   "main": "index.d.ts",
   "scripts": {
