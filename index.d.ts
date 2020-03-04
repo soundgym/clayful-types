@@ -929,7 +929,7 @@ declare module "clayful" {
         };
         discounted: IClayfulPriceFormat;
         taxed: IClayfulPriceFormat;
-        amount: IClayfulPriceFormat;
+        amount: IClayfulPriceFormat | number;
         taxes: {
           key: string;
           taxed: IClayfulPriceFormat;
