@@ -63,10 +63,10 @@ declare module "clayful" {
   }
 
   export interface IClayfulTaxedPriceFormat {
-    original: number;
-    sale: number;
-    withTax: number;
-    withoutTax: number;
+    original: IClayfulPriceFormat;
+    sale: IClayfulPriceFormat;
+    withTax: IClayfulPriceFormat;
+    withoutTax: IClayfulPriceFormat;
   }
 
   export interface IClayfulCountFormat {
@@ -822,6 +822,13 @@ declare module "clayful" {
         callback: (err: IClayfulError, response: AxiosResponse<object>) => void
       ) => void;
 
+      /** 내 주문을 수령 완료상태로 체크합니다. (Order.receivedAt) **/
+      markAsReceivedForMe: (
+        orderId: string,
+        options: IClayfulRequestOptions<null>,
+        callback: (err: IClayfulError, response: AxiosResponse<object>) => void
+      ) => void;
+
       /** 내 주문 내역을 동기화합니다. (아임포트 결제 내역을 주문 상태에 반영합니다.) **/
       updateTransactionsForMe: (
         id: string,
@@ -870,7 +877,7 @@ declare module "clayful" {
       status: OrderStatus;
 
       tags: any[];
-      arrivedAt: null | any;
+      receivedAt: null | any;
       syncTriedAt: null | any;
       cancellation: null | any;
       request: string;
@@ -909,38 +916,57 @@ declare module "clayful" {
 
       // 주문한 금액 총 내역
       total: {
-        price: IClayfulPriceFormat;
+        price: IClayfulTaxedPriceFormat;
         items: {
           price: IClayfulTaxedPriceFormat;
-          discounted: number;
-          taxed: number;
+          discounted: IClayfulPriceFormat;
+          taxed: IClayfulPriceFormat;
         };
         shipping: {
           fee: IClayfulTaxedPriceFormat;
-          discounted: number;
-          taxed: number;
+          discounted: IClayfulPriceFormat;
+          taxed: IClayfulPriceFormat;
         };
-        discounted: number;
-        taxed: number;
-        amount: number;
+        discounted: IClayfulPriceFormat;
+        taxed: IClayfulPriceFormat;
+        amount: IClayfulPriceFormat;
         taxes: {
           key: string;
-          taxed: number;
+          taxed: IClayfulPriceFormat;
         }[];
+        paid: IClayfulPriceFormat;
+        cancelled: IClayfulPriceFormat;
+        refunded: IClayfulPriceFormat;
       };
 
       // 주문한 상품 정보
       items: {
         total: {
           price: IClayfulTaxedPriceFormat;
-          discounted: number;
-          taxed: number;
+          discounted: IClayfulPriceFormat;
+          taxed: IClayfulPriceFormat;
         };
         price: IClayfulTaxedPriceFormat;
         brand: null | string;
         shippingMethod: string;
         taxCategory: null | any;
-        bundleItems: [];
+        bundleItems: Pick<
+          Product.IProductItem,
+          | "_id"
+          | "type"
+          | "brand"
+          | "shippingMethod"
+          | "textCategory"
+          | "quantity"
+          | "variant"
+          | "product"
+          | "collections"
+          | "discounts"
+          | "discounted"
+          | "taxes"
+          | "taxed"
+        > &
+          { required: boolean }[];
         collections: {
           path: string[];
         }[];
@@ -963,11 +989,11 @@ declare module "clayful" {
 
         product: Pick<Product.IProductItem, "_id" | "name" | "thumbnail">;
         variant: Omit<Product.IProductVariant, "quantity" | "available">;
-        quantity: number;
+        quantity: IClayfulNumberFormat;
         _id: string;
         type: Product.ProductType;
-        discounted: number;
-        taxed: number;
+        discounted: IClayfulPriceFormat;
+        taxed: IClayfulPriceFormat;
       }[];
 
       // 주문한 상품의 배송 정보
@@ -993,7 +1019,7 @@ declare module "clayful" {
         }[];
         type: string;
         shippingPolicy: string;
-        quantity: number;
+        quantity: IClayfulNumberFormat;
         free: boolean;
         discounted: number;
         taxed: number;
@@ -1009,7 +1035,7 @@ declare module "clayful" {
         };
         items: {
           item: string;
-          quantity: number;
+          quantity: IClayfulNumberFormat;
         }[];
         createdAt: string;
         updatedAt: string;
@@ -1050,7 +1076,7 @@ declare module "clayful" {
             name: string;
           }[];
           item: string;
-          quantity: number;
+          quantity: IClayfulNumberFormat;
         }[];
         shipments: [];
         createdAt: string;
