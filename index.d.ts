@@ -950,23 +950,23 @@ declare module "clayful" {
         brand: null | string;
         shippingMethod: string;
         taxCategory: null | any;
-        bundleItems: Pick<
+        bundleItems: (Pick<
           Product.IProductItem,
-          | "_id"
-          | "type"
+          | "price"
           | "brand"
           | "shippingMethod"
           | "textCategory"
           | "quantity"
           | "variant"
           | "product"
+          | "_id"
+          | "type"
           | "collections"
           | "discounts"
           | "discounted"
           | "taxes"
           | "taxed"
-        > &
-          { required: boolean }[];
+        > & { required: boolean })[];
         collections: {
           path: string[];
         }[];
