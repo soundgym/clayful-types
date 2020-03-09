@@ -958,7 +958,6 @@ declare module "clayful" {
           | "textCategory"
           | "quantity"
           | "variant"
-          | "product"
           | "_id"
           | "type"
           | "collections"
@@ -966,7 +965,17 @@ declare module "clayful" {
           | "discounted"
           | "taxes"
           | "taxed"
-        > & { required: boolean })[];
+        > & {
+          required: boolean;
+          product: {
+            _id: string;
+            name: string;
+            thumbnail: {
+              _id: string;
+              url: null | string;
+            };
+          };
+        })[];
         collections: {
           path: string[];
         }[];
