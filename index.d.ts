@@ -1,7 +1,7 @@
-import { AxiosResponse } from "axios";
-
-//  https://github.com/Clayful/clayful-js/tree/master/lib/models-js
+// https://github.com/Clayful/clayful-js/tree/master/lib/models-js
 declare module "clayful" {
+  import { AxiosResponse } from "axios";
+
   export interface IClayfulHeadersOptions {
     language?: string;
     currency?: string;
