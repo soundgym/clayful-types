@@ -962,26 +962,20 @@ declare module "clayful" {
           taxed: IClayfulPriceFormat;
         };
         price: IClayfulTaxedPriceFormat;
-        brand: null | string;
-        shippingMethod: string;
+        brand: null | any;
+        shippingMethod: null | { _id: string; name: string };
         taxCategory: null | any;
-        bundleItems: (Pick<
-          Product.IProductItem,
-          | "price"
-          | "brand"
-          | "shippingMethod"
-          | "textCategory"
-          | "quantity"
-          | "variant"
-          | "_id"
-          | "type"
-          | "collections"
-          | "discounts"
-          | "discounted"
-          | "taxes"
-          | "taxed"
-        > & {
+        bundleItems: {
+          _id: string;
+          brand: null | any;
+          type: Product.ProductType;
+          shippingMethod: null | { _id: string; name: string };
+          taxCategory: null | any;
+          quantity: IClayfulNumberFormat;
+          price: IClayfulTaxedPriceFormat;
           required: boolean;
+          variant: Product.IProductVariant;
+          collections: { path: { _id: string; name: string }[] }[];
           product: {
             _id: string;
             name: string;
@@ -990,11 +984,26 @@ declare module "clayful" {
               url: null | string;
             };
           };
-        })[];
+          discounts: {
+            overridden: null | any;
+            coupon: string;
+            type: "percentage" | string;
+            value: number;
+            discounted: number;
+            before: number;
+            after: number;
+          }[];
+          discounted: IClayfulPriceFormat;
+          taxes: {
+            name: string;
+            rate: number;
+            taxed: number;
+          }[];
+          taxed: IClayfulPriceFormat;
+        }[];
         collections: {
           path: string[];
         }[];
-
         discounts: {
           overridden: null | any;
           coupon: string;
@@ -1004,19 +1013,17 @@ declare module "clayful" {
           before: number;
           after: number;
         }[];
-
-        taxes: {
-          name: string;
-          rate: number;
-          taxed: number;
-        }[];
-
         product: Pick<Product.IProductItem, "_id" | "name" | "thumbnail">;
         variant: Omit<Product.IProductVariant, "quantity" | "available">;
         quantity: IClayfulNumberFormat;
         _id: string;
         type: Product.ProductType;
         discounted: IClayfulPriceFormat;
+        taxes: {
+          name: string;
+          rate: number;
+          taxed: number;
+        }[];
         taxed: IClayfulPriceFormat;
       }[];
 
