@@ -766,11 +766,26 @@ declare module "clayful" {
   //https://dev.clayful.io/ko/node/apis/order/list
   export namespace Order {
     interface IOrder {
+      /** 주문을 조회합니다. **/
+      get: (
+        orderId: string,
+        options: IClayfulRequestOptions<null>,
+        callback: (err: IClayfulError, response: AxiosResponse<IOrderItem>) => void
+      ) => void;
+
       /** 주문을 삭제합니다. **/
       delete: (
         orderId: string,
         options: IClayfulRequestOptions<null>,
         callback: (err: IClayfulError, response: AxiosResponse<null>) => void
+      ) => void;
+
+      /** 환불 요청을 승인합니다. **/
+      acceptRefund: (
+        orderId: string,
+        refundId: string,
+        options: IClayfulRequestOptions<null>,
+        callback: (err: IClayfulError, response: AxiosResponse<{ accepted: true }>) => void
       ) => void;
 
       /** 내 주문 내역 목록을 요청합니다. */
@@ -842,8 +857,8 @@ declare module "clayful" {
               cancelled: number;
               refunded: number;
               vbanks: any[];
-              createdAt: string;
-              updatedAt: string;
+              createdAt: IClayfulTimeFormat;
+              updatedAt: IClayfulTimeFormat;
               paymentMethod: string;
             }[];
           }>
@@ -1046,8 +1061,8 @@ declare module "clayful" {
           item: string;
           quantity: IClayfulNumberFormat;
         }[];
-        createdAt: string;
-        updatedAt: string;
+        createdAt: IClayfulTimeFormat;
+        updatedAt: IClayfulTimeFormat;
         _id: string;
         status: "pending" | "shipped" | "arrived";
       }[];
@@ -1088,8 +1103,8 @@ declare module "clayful" {
           quantity: IClayfulNumberFormat;
         }[];
         shipments: [];
-        createdAt: string;
-        updatedAt: string;
+        createdAt: IClayfulTimeFormat;
+        updatedAt: IClayfulTimeFormat;
         status: "requested" | "accepted" | "cancelled";
         _id: string;
       }[];
@@ -1099,8 +1114,8 @@ declare module "clayful" {
         cancelled: number;
         refunded: number;
         vbanks: any[];
-        createdAt: string;
-        updatedAt: string;
+        createdAt: IClayfulTimeFormat;
+        updatedAt: IClayfulTimeFormat;
         paymentMethod: string;
       }[];
       meta: IClayfulCustomField;
